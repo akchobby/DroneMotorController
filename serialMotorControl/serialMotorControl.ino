@@ -3,7 +3,7 @@ Controlling an BLDC using Serial Monitor
 Created on 26th July 2019
 by Anil Kumar Chavali
 
-Still not 100% sure if this system is safe but it works.
+100% sure it works!! ;;;;; )))))
 WARNING!!!! : Dont attach the live wire from the BEC only grd and signal to arduino, I just burnt an ESC (indirectly because of this)
 */
 
@@ -48,17 +48,16 @@ void loop()
             // this temporary copy is necessary to protect the original data
             //   because strtok() used in parseData() replaces the commas with \0
         parseData();
+        
         newData = false;
     }
            
   Esc.write(serialVal);                  // sets the servo position according to the scaled value
+  Serial.println(serialVal);
   
                           
 }
-void serialEvent()
-{
-  serialVal = Serial.read(); 
-}
+
 
 
 //-----------------------------
@@ -93,6 +92,7 @@ void recvWithStartEndMarkers() {
         else if (rc == startMarker) {
             recvInProgress = true;
         }
+        
     }
 }
 
@@ -106,8 +106,17 @@ void parseData() {      // split the data into its parts
 
     strtokIndx = strtok(tempChars,";");      // get the first part - the string
     integerFromPC = atoi(strtokIndx);     // convert this part to an integer
-
-    serialVal = map(integerFromPC, 0,100,0,180);
+   
+    if(integerFromPC<=100)
+    {
+      serialVal = map(integerFromPC, 0,100,0,180);
+    }
+    else
+    {
+      serialVal = 0;
+      Serial.print("Invalid Char");
+      delay(2000);
+    }
 
  
 
